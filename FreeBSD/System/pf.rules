@@ -1,0 +1,23 @@
+#####################################
+##     OpenBSD PF 防火墙规则
+##  设置开启的端口列表
+##  设置默认网卡接口
+##  放行 lo0 网卡的所有流量
+##  开启入站流量整形
+##  默认屏蔽所有入站请求
+##  不限制出站流量，并开启连接保持
+##　允许 ICMP 包通过
+##  放行指定端口的 TCP 连接
+##  屏蔽指定 IP
+######################################
+tcp_services = "{ 5222, http, https }"
+ext_if="xn1"
+pass on lo0 all
+scrub in all
+block in all
+pass out keep state
+pass inet proto icmp from any to any
+pass in on $ext_if proto tcp from any to $ext_if:network port $tcp_services keep state
+block drop in quick on $ext_if from {121.42.0.15, 121.42.0.39, 222.73.199.105, 117.21.176.241, 120.24.54.198, 142.54.184.178 } to any
+#pass in quick on $ext_if proto tcp from 115.205.68.44 to $ext_if:network port 161 keep state
+
